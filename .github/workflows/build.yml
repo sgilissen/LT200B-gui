@@ -61,3 +61,52 @@ jobs:
         with:
           name: LT200B-windows
           path: dist_artifacts/windows
+
+  release:
+    needs: [ build-linux, build-windows ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: LT200B-linux
+          path: release_assets/linux
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: LT200B-windows
+          path: release_assets/windows
+
+      - name: Get build metadata
+        id: vars
+        run: |
+          echo "date_tag=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+
+      - name: Zip artifacts
+        run: |
+          zip -j release_assets/linux/LT200B-linux.zip release_assets/linux/LT200B
+          zip -j release_assets/windows/LT200B-windows.zip release_assets/windows/LT200B.exe
+
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v-${{ steps.vars.outputs.date_tag }}
+          name: Build ${{ steps.vars.outputs.date_tag }} (${{ steps.vars.outputs.short_sha }})
+          body: |
+            Automated build for ${{ steps.vars.outputs.date_tag }}
+            Built from commit ${{ steps.vars.outputs.short_sha }}
+
+            This release includes:
+            - 🐧 Linux binary (zipped)
+            - 🪟 Windows executable (zipped)
+
+          files: |
+            release_assets/linux/LT200B-linux.zip
+            release_assets/windows/LT200B-windows.zip
