@@ -29,7 +29,7 @@ jobs:
           mv dist/LT200B dist_artifacts/linux/
 
       - name: Upload Linux artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LT200B-linux
           path: dist_artifacts/linux
@@ -57,7 +57,7 @@ jobs:
           move dist\LT200B.exe dist_artifacts\windows\
 
       - name: Upload Windows artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LT200B-windows
           path: dist_artifacts/windows
