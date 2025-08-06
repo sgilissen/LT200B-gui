@@ -1,0 +1,9 @@
+bleak==1.0.1
+customtkinter==5.2.2
+darkdetect==0.8.0
+dbus-fast==2.44.3
+numpy==2.3.2
+packaging==25.0
+pillow==11.3.0
+platformdirs==4.3.8
+typing_extensions==4.14.1
