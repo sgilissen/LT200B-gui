@@ -7,25 +7,32 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up Docker Build Environment
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
         run: |
-          docker run --rm -v ${{ github.workspace }}:/app -w /app \
-            debian:bullseye bash -c "
-              apt update &&
-              apt install -y python3.11 python3.11-venv python3-pip build-essential curl &&
-              ln -s /usr/bin/python3.11 /usr/bin/python &&
-              python -m pip install --upgrade pip &&
-              pip install -r requirements.txt pyinstaller &&
-              pyinstaller main.py --name LT200B --onefile --add-data 'utils:utils' --icon=icon.png &&
-              mkdir -p dist_artifacts/linux &&
-              mv dist/LT200B dist_artifacts/linux/
-            "
-  
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build Linux executable
+        run: |
+          pyinstaller main.py --name LT200B --onefile --add-data "utils:utils" --icon=icon.png
+          mkdir -p dist_artifacts/linux
+          mv dist/LT200B dist_artifacts/linux/
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LT200B-linux
+          path: dist_artifacts/linux
 
   build-windows:
     runs-on: windows-latest
