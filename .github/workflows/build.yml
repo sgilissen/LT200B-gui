@@ -98,10 +98,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v-${{ steps.vars.outputs.date_tag }}
-          name: Build ${{ steps.vars.outputs.date_tag }} (${{ steps.vars.outputs.short_sha }})
+          name: Build ${{ steps.vars.outputs.date_tag }}
           body: |
             Automated build for ${{ steps.vars.outputs.date_tag }}
-            Built from commit ${{ steps.vars.outputs.short_sha }}
 
             This release includes:
             - 🐧 Linux binary (zipped)
