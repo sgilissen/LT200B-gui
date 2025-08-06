@@ -27,7 +27,17 @@ Run the script
 `python main.py`
 
 ### Release version
-* soon *
+Currently available for Linux and Windows. 
+#### Linux
+Unzip the file. 
+
+`chmod +x LT200B`
+
+Run the executable
+
+#### Windows
+Unzip the file. 
+Run the executable.
 
 ## Screenshots
 
