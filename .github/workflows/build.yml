@@ -90,8 +90,8 @@ jobs:
 
       - name: Zip artifacts
         run: |
-          zip -j release_assets/linux/LT200B-linux.zip release_assets/linux/LT200B
-          zip -j release_assets/windows/LT200B-windows.zip release_assets/windows/LT200B.exe
+          zip -j release_assets/linux/LT200B-linux.zip release_assets/linux/LT200B README.md LICENSE
+          zip -j release_assets/windows/LT200B-windows.zip release_assets/windows/LT200B.exe README.md LICENSE
 
 
       - name: Publish release
