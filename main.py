@@ -27,7 +27,7 @@ class MainTabView(customtkinter.CTkTabview):
         self.print_txt_button = customtkinter.CTkButton(
             master=self.tab("Text Label"),
             text="Print Label",
-            command=lambda: app_reference.btn_print_txt_label(self.textinput.get())
+            command=lambda: app_reference.btn_print_txt_label(self.textinput.get("1.0", customtkinter.END) )
         )
         self.print_txt_button.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
 
@@ -63,7 +63,7 @@ class App(customtkinter.CTk):
         self.device_window = None
         self.device_frame = None
         self.scan_label = None
-        self.geometry("320x500")
+        self.geometry("420x450")
         self.title("LT200B Label Maker")
         self.grid_columnconfigure(0, weight=1)
 
@@ -198,6 +198,8 @@ class App(customtkinter.CTk):
         if not text_value:
             self.safe_alert("Label empty", "The label text is empty. Please provide a label text", level="info")
             return
+
+        text_value = text_value.replace("\r\n", "n").rstrip().lstrip()
 
         try:
             with lt200b.create_text_image(text_value, None, 64) as img:
