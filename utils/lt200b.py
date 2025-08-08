@@ -15,7 +15,7 @@ def create_text_image(text, font_path, font_size):
     img = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(img)
 
-    draw.text((0, 32), text, font=font, fill="black", anchor="lm")
+    draw.multiline_text((0, img_height / 2), text, font=font, fill="black", anchor="lm") # align middle left anchored in the middle
 
     return img
 

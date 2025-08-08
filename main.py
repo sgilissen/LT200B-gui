@@ -22,7 +22,7 @@ class MainTabView(customtkinter.CTkTabview):
         # Text label
         self.textinput_label = customtkinter.CTkLabel(master=self.tab("Text Label"), text="Text Input")
         self.textinput_label.grid(row=0, column=0, padx=20, pady=10)
-        self.textinput = customtkinter.CTkEntry(master=self.tab("Text Label"))
+        self.textinput = customtkinter.CTkTextbox(master=self.tab("Text Label"), width=240, height=80, wrap="none")
         self.textinput.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
         self.print_txt_button = customtkinter.CTkButton(
             master=self.tab("Text Label"),
