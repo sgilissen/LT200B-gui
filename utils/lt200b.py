@@ -7,12 +7,10 @@ def create_text_image(text, font_path, font_size):
     else:
         font = ImageFont.load_default(font_size)
 
-    with Image.new("RGB", (1, 1), "white") as temp_img:
-        temp_draw = ImageDraw.Draw(temp_img)
-        text_width = temp_draw.textlength(text, font=font)
+    text_width, text_height = textsize(text, font)
 
     img_width = int(text_width)
-    img_height = 64
+    img_height = int(text_height)
 
     img = Image.new("RGB", (img_width, img_height), "white")
     draw = ImageDraw.Draw(img)
@@ -21,6 +19,11 @@ def create_text_image(text, font_path, font_size):
 
     return img
 
+def textsize(text, font):
+    im = Image.new(mode="P", size=(0, 0))
+    draw = ImageDraw.Draw(im)
+    _, _, width, height = draw.textbbox((0, 0), text=text, font=font)
+    return width, height
 
 async def print_image(address, job):
     async with BleakClient(address) as client:
