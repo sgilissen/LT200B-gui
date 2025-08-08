@@ -133,9 +133,13 @@ class App(customtkinter.CTk):
         self.device_frame = customtkinter.CTkScrollableFrame(self.device_window, width=280, height=300)
         self.device_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
+        # Bring the window to the top immediately after creation
+        self.device_window.lift()
+
         # Schedule grab_set after the window becomes viewable
         self.after(100, lambda: self.device_window.grab_set())
 
+        # Start the asynchronous scan in a separate thread
         threading.Thread(target=lambda: asyncio.run(self._async_scan_for_printer())).start()
 
 
@@ -206,6 +210,8 @@ class App(customtkinter.CTk):
 
     async def _async_scan_for_printer(self):
         try:
+            self.device_window.lift()
+
             devices = await BleakScanner.discover(timeout=5.0)
 
             filtered = [d for d in devices if d.name]  # Only show named devices
@@ -215,6 +221,7 @@ class App(customtkinter.CTk):
                 return
 
             self.after(0, lambda: self.populate_device_window(filtered))
+            self.after(0, lambda: self.device_window.lift())
 
 
         except Exception as e:
