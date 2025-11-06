@@ -22,12 +22,12 @@ class MainTabView(customtkinter.CTkTabview):
         # Text label
         self.textinput_label = customtkinter.CTkLabel(master=self.tab("Text Label"), text="Text Input")
         self.textinput_label.grid(row=0, column=0, padx=20, pady=10)
-        self.textinput = customtkinter.CTkEntry(master=self.tab("Text Label"))
+        self.textinput = customtkinter.CTkTextbox(master=self.tab("Text Label"), width=240, height=80, wrap="none")
         self.textinput.grid(row=0, column=1, padx=20, pady=20, sticky="ew")
         self.print_txt_button = customtkinter.CTkButton(
             master=self.tab("Text Label"),
             text="Print Label",
-            command=lambda: app_reference.btn_print_txt_label(self.textinput.get())
+            command=lambda: app_reference.btn_print_txt_label(self.textinput.get("1.0", customtkinter.END) )
         )
         self.print_txt_button.grid(row=1, column=1, padx=20, pady=20, sticky="ew")
 
@@ -63,7 +63,7 @@ class App(customtkinter.CTk):
         self.device_window = None
         self.device_frame = None
         self.scan_label = None
-        self.geometry("320x500")
+        self.geometry("420x450")
         self.title("LT200B Label Maker")
         self.grid_columnconfigure(0, weight=1)
 
@@ -133,9 +133,13 @@ class App(customtkinter.CTk):
         self.device_frame = customtkinter.CTkScrollableFrame(self.device_window, width=280, height=300)
         self.device_frame.pack(pady=10, padx=10, fill="both", expand=True)
 
+        # Bring the window to the top immediately after creation
+        self.device_window.lift()
+
         # Schedule grab_set after the window becomes viewable
         self.after(100, lambda: self.device_window.grab_set())
 
+        # Start the asynchronous scan in a separate thread
         threading.Thread(target=lambda: asyncio.run(self._async_scan_for_printer())).start()
 
 
@@ -195,6 +199,8 @@ class App(customtkinter.CTk):
             self.safe_alert("Label empty", "The label text is empty. Please provide a label text", level="info")
             return
 
+        text_value = text_value.replace("\r\n", "n").rstrip().lstrip()
+
         try:
             with lt200b.create_text_image(text_value, None, 64) as img:
                 request = create_job(img)
@@ -206,6 +212,8 @@ class App(customtkinter.CTk):
 
     async def _async_scan_for_printer(self):
         try:
+            self.device_window.lift()
+
             devices = await BleakScanner.discover(timeout=5.0)
 
             filtered = [d for d in devices if d.name]  # Only show named devices
@@ -215,6 +223,7 @@ class App(customtkinter.CTk):
                 return
 
             self.after(0, lambda: self.populate_device_window(filtered))
+            self.after(0, lambda: self.device_window.lift())
 
 
         except Exception as e:
